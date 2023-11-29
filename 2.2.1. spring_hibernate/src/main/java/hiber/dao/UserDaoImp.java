@@ -4,6 +4,7 @@ import hiber.model.Car;
 import hiber.model.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -31,19 +32,12 @@ public class UserDaoImp implements UserDao {
    @Override
    public User find(String model, int series) {
       User findUser = null;
-      TypedQuery<Car> findCarQuery = sessionFactory.getCurrentSession().createQuery("from Car where model = :carModel and series = :carSeries")
-              .setParameter("carModel", model)
-              .setParameter("carSeries", series);
-      List<Car> findCarList = findCarQuery.getResultList();
-      if (!findCarList.isEmpty()) {
-         Car findCar = findCarList.get(0);
-         List<User> ListUser = listUsers();
-         for (User user : ListUser){
-            if(user.getCar() != null && user.getCar().equals(findCar)){
-               findUser = user;
-            }
-         }
-         return findUser;
+      TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User where car.series = :series and car.model = :model")
+              .setParameter("model", model)
+              .setParameter("series", series);
+      List<User> users = query.getResultList();
+      if (!users.isEmpty()){
+         findUser = users.get(0);
       }
       return findUser;
    }

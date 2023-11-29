@@ -46,7 +46,7 @@ public class MainApp {
          System.out.println("Email = "+user.getEmail());
          System.out.println();
       }
-      User user = userService.find("VAZ", 2107);
+      User user = userService.find("uaz", 2107);
       System.out.println(user);
       context.close();
    }
